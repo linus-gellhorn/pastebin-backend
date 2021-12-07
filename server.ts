@@ -26,9 +26,41 @@ app.use(cors()); //add CORS support to each following route handler
 const client = new Client(dbConfig);
 client.connect();
 
-app.get("/", async (req, res) => {
-  const dbres = await client.query("select * from pastebin");
-  res.json(dbres.rows);
+// get all pastebins
+app.get("/pastes", async (req, res) => {
+  const dbres = await client.query(
+    "select * from pastebin order by creation_date desc LIMIT 10"
+  );
+  res.status(200).json({
+    status: "success",
+    data: dbres.rows,
+  });
+});
+
+// post new pastebin
+app.post("/pastes", async (req, res) => {
+  const { input, title } = req.body;
+  if (
+    (typeof input === "string" || typeof input === "number") &&
+    (typeof title === "string" ||
+      typeof title === "number" ||
+      typeof title === undefined)
+  ) {
+    const dbres = await client.query(
+      `insert into pastebin (title, input) values($1, $2) returning *`,
+      [title, input]
+    );
+
+    res.status(201).json({
+      status: "success",
+      data: dbres.rows,
+    });
+  } else {
+    res.status(400).json({
+      status: "failed",
+      message: "input expects string or number value",
+    });
+  }
 });
 
 //Start the server on the given port
