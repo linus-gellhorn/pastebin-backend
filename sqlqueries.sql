@@ -8,3 +8,4 @@ CREATE TABLE pastebin (
 
 -- create first row
 INSERT INTO pastebin VALUES (1,'test pastebin','first title')
+
