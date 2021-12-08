@@ -44,7 +44,8 @@ app.post("/pastes", async (req, res) => {
     (typeof input === "string" || typeof input === "number") &&
     (typeof title === "string" ||
       typeof title === "number" ||
-      typeof title === undefined)
+      typeof title === undefined) &&
+    input.toString().length > 0
   ) {
     const dbres = await client.query(
       `insert into pastebin (title, input) values($1, $2) returning *`,
