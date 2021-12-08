@@ -1,8 +1,8 @@
 -- create table
 CREATE TABLE pastebin (
   id SERIAL PRIMARY KEY,
-  input VARCHAR(255) NOT NULL,
-  title VARCHAR(255),
+  input TEXT NOT NULL,
+  title VARCHAR(50),
   creation_date TIMESTAMP DEFAULT NOW()
 );
 
