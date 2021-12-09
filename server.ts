@@ -40,26 +40,26 @@ app.get("/pastes", async (req, res) => {
 // post new pastebin
 app.post("/pastes", async (req, res) => {
   const { input, title } = req.body;
-  if (
-    (typeof input === "string" || typeof input === "number") &&
-    (typeof title === "string" ||
-      typeof title === "number" ||
-      typeof title === undefined) &&
-    input.toString().length > 0
-  ) {
-    const dbres = await client.query(
-      `insert into pastebin (title, input) values($1, $2) returning *`,
-      [title, input]
-    );
-
-    res.status(201).json({
-      status: "success",
-      data: dbres.rows,
-    });
+  if (input.toString().length > 0) {
+    if (title.toString().length <= 50) {
+      const dbres = await client.query(
+        `insert into pastebin (title, input) values($1, $2) returning *`,
+        [title, input]
+      );
+      res.status(201).json({
+        status: "success",
+        data: dbres.rows,
+      });
+    } else {
+      res.status(400).json({
+        status: "failed",
+        message: "title must be 50 characters or less",
+      });
+    }
   } else {
     res.status(400).json({
       status: "failed",
-      message: "input expects string or number value",
+      message: "cannot submit empty input",
     });
   }
 });
